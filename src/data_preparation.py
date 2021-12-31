@@ -175,7 +175,7 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
             fmask[k][most_var] = True
         else:
             fmask[k][:] = True
-        print "layer: %s, shape=%s" % (k, (fmaps[k].shape))      
+        print("layer: %s, shape=%s" % (k, (fmaps[k].shape)))
         sys.stdout.flush() 
 
     # ORIGINAL PARTITIONING OF LAYERS
@@ -187,7 +187,7 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
     layer_rlist = [range(start,stop) for start,stop in zip(partitions[:-1], partitions[1:])] # the frequency ranges list
     # concatenate fmaps of identical dimension to speed up rf application
     clmask, cfmask, cfmaps = [],[],[]
-    print ""
+    print("")
     # I would need to make sure about the order and contiguousness of the fmaps to preserve the inital order.
     # It isn't done right now but since the original feature maps are monotonically decreasing in resultion in
     # the examples I treated, the previous issue doesn't arise.
@@ -198,7 +198,7 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
         clmask += [lmask,]
         cfmask += [np.arange(len(bfmask))[bfmask],]
         cfmaps += [np.concatenate([fmaps[l] for l in lmask], axis=1),]
-        print "fmaps: %s, shape=%s" % (k, (cfmaps[-1].shape)) 
+        print("fmaps: %s, shape=%s" % (k, (cfmaps[-1].shape)))
         sys.stdout.flush()
     fmaps_sizes = [fm.shape for fm in cfmaps]
     return fmap_var, layer_rlist, fmaps_sizes, fmaps_count, clmask, cfmask #, scaling
@@ -233,8 +233,8 @@ def preprocess_gabor_feature_maps(feat_dict, act_func=None, dtype=np.float32):
     fmaps_sizes = [] 
     for fm in fmaps:
         fmaps_sizes += [fm.shape]
-    print fmaps_sizes
-    print "total fmaps = %d" % fmaps_count 
+    print(fmaps_sizes)
+    print("total fmaps = %d" % fmaps_count)
     return fmaps, fmaps_sizes 
 
 
@@ -242,7 +242,7 @@ def create_gabor_feature_maps(stim_data, gabor_params, nonlinearity=lambda x: x)
     '''input should be a dictionary of control parameters
     output should be the model space tensors'''
     from gaborizer.src.gabor_feature_dictionaries import gabor_feature_maps
-    print gabor_params
+    print(gabor_params)
     n_ori = gabor_params['n_orientations']
     gfm = gabor_feature_maps(n_ori,\
         gabor_params['deg_per_stimulus'], (gabor_params['lowest_sp_freq'], gabor_params['highest_sp_freq'], gabor_params['num_sp_freq']),\
