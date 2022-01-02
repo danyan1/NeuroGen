@@ -272,14 +272,14 @@ def save_stuff(save_to_this_file, data_objects_dict):
         for k,v in data_objects_dict.iteritems():
             try:
                 hf.create_dataset(k,data=v)
-                print 'saved %s in h5py file' %(k)
+                print('saved %s in h5py file' %(k))
             except:
                 failed.append(k)
-                print 'failed to save %s as h5py. will try pickle' %(k)   
+                print('failed to save %s as h5py. will try pickle' %(k))
     for k in failed:
         with open(save_to_this_file+'_'+'%s.pkl' %(k), 'w') as pkl:
             try:
                 pickle.dump(data_objects_dict[k],pkl)
-                print 'saved %s as pkl' %(k)
+                print('saved %s as pkl' %(k))
             except:
-                print 'failed to save %s in any format. lost.' %(k) 
+                print('failed to save %s in any format. lost.' %(k))
