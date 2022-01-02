@@ -19,21 +19,24 @@ from itertools import zip_longest
 from src.file_utility import load_mask_from_nii, view_data
 from src.load_nsd import load_betas
 
-nsd_root = "/home/zg243/nsd/"
+nsd_root = "/Users/qiner/Documents/NSD/"
 stim_root = nsd_root + "stimuli/"
 beta_root = nsd_root + "responses/"
 mask_root = nsd_root + "mask/ppdata/"
 roi_root = nsd_root + "freesurfer/"
+
 roimask_dir = nsd_root + 'roimask/'
 roibeta_dir = nsd_root + 'roibeta/'
 
 exp_design_file = nsd_root + "experiments/nsd_expdesign.mat"
 stim_file       = stim_root + "nsd_stimuli.hdf5"
 
-subject = 8
-ROIs = ['OFA', 'FFA1', 'FFA2', 'mTLfaces', 'aTLfaces', 'EBA', 'FBA1', 'FBA2', 'mTLbodies', 'OPA', 'PPA', 'RSC', 'OWFA', 'VWFA1', 'VWFA2', 'mfswords', 'mTLwords', 'V1v', 'V1d', 'V2v', 'V2d', 'V3v', 'V3d', 'hV4']
+subject = 1
+ROIs = ['OFA', 'FFA1', 'FFA2', 'mTLfaces', 'aTLfaces', 'EBA', 'FBA1', 'FBA2', 'mTLbodies', 'OPA', 'PPA', 'RSC', 'OWFA',
+		'VWFA1', 'VWFA2', 'mfswords', 'mTLwords', 'V1v', 'V1d', 'V2v', 'V2d', 'V3v', 'V3d', 'hV4']
 
-tight_mask_full = load_mask_from_nii(mask_root + "subj%02d/func1pt8mm/brainmask_inflated_1.0.nii"%subject) 
+tight_mask_full = load_mask_from_nii(mask_root + "subj%02d/func1pt8mm/brainmask.nii.gz"%subject)
+# tight_mask_full = load_mask_from_nii(mask_root + "subj%02d/func1pt8mm/brainmask_inflated_1.0.nii"%subject)
 brain_mask_full = tight_mask_full.flatten().astype(bool)
 voxel_idx_brain = np.arange(len(brain_mask_full))[brain_mask_full]
 
