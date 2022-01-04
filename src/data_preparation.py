@@ -7,7 +7,7 @@ import theano.tensor as T
 
 
 def dnn_feature_extractor(_incoming, param_file_name='', drop_ratio_conv=0., drop_ratio_fc=0.5):
-    '''Need to provide a size-compatible input at runtime i.e.: ('x', 3, 227, 227)'''
+    """Need to provide a size-compatible input at runtime i.e.: ('x', 3, 227, 227)"""
     import lasagne
     import lasagne.layers as L
     import lasagne.nonlinearities as NL
@@ -131,7 +131,8 @@ def get_dnn_feature_maps(stim_data, fmaps_fn, batch_size):
 #    # I would need to make sure about the order and contiguousness of the fmaps to preserve the inital order.
 #    # It isn't done right now but since the original feature maps are monotonically decreasing in resultion in
 #    # the examples I treated, the previous issue doesn't arise.
-#    for k,us in enumerate(np.unique([np.prod(fs[2:4]) for fs in fmaps_sizes])[::-1]): ## they appear sorted from small to large, so I reversed the order
+#    for k,us in enumerate(np.unique([np.prod(fs[2:4]) for fs in fmaps_sizes])[::-1]):
+#        they appear sorted from small to large, so I reversed the order
 #        mask = np.array([np.prod(fs[2:4])==us for fs in fmaps_sizes]) # mask over layers that have that spatial size
 #        lmask = np.arange(len(fmaps_sizes))[mask] # list of index for layers that have that size
 #        bfmask = np.concatenate([fmask[l] for l in lmask], axis=0)
@@ -160,8 +161,8 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
     for rr, rl in iterate_range(0, size, batch_size):
         fb = fmaps_fn(stim_data[rr])
         for k, f in enumerate(fb):
-            if f.shape[
-                1] > fmap_max:  # only need the average if we're going to use them to reduce the number of feature maps
+            if f.shape[1] > fmap_max:
+                # only need the average if we're going to use them to reduce the number of feature maps
                 run_avg[k] += np.sum(np.mean(f.astype(np.float64), axis=(2, 3)), axis=0)
                 run_sqr[k] += np.sum(np.mean(np.square(f.astype(np.float64)), axis=(2, 3)), axis=0)
     for k in range(len(fb)):
@@ -196,8 +197,8 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
     # I would need to make sure about the order and contiguousness of the fmaps to preserve the inital order.
     # It isn't done right now but since the original feature maps are monotonically decreasing in resultion in
     # the examples I treated, the previous issue doesn't arise.
-    for k, us in enumerate(np.unique([np.prod(fs[2:4]) for fs in fmaps_sizes])[
-                           ::-1]):  ## they appear sorted from small to large, so I reversed the order
+    for k, us in enumerate(np.unique([np.prod(fs[2:4]) for fs in fmaps_sizes])[::-1]):
+        # they appear sorted from small to large, so I reversed the order
         mask = np.array([np.prod(fs[2:4]) == us for fs in fmaps_sizes])  # mask over layers that have that spatial size
         lmask = np.arange(len(fmaps_sizes))[mask]  # list of index for layers that have that size
         bfmask = np.concatenate([fmask[l] for l in lmask], axis=0)
@@ -211,10 +212,10 @@ def create_dnn_feature_maps(stim_data, fmaps_fn, batch_size, fmap_max=1024, trn_
 
 
 def preprocess_gabor_feature_maps(feat_dict, act_func=None, dtype=np.float32):
-    '''
+    """
     Apply optional nonlinearity to the feature maps itself and concatenate feature maps of the same dimensions.
     Returns the feature maps and a list of theano variables to represent them, and the shape of the fmaps.
-    '''
+    """
     fmap_rez = []
     for k in feat_dict.keys():
         fmap_rez += [feat_dict[k].shape[2], ]
@@ -245,15 +246,16 @@ def preprocess_gabor_feature_maps(feat_dict, act_func=None, dtype=np.float32):
 
 
 def create_gabor_feature_maps(stim_data, gabor_params, nonlinearity=lambda x: x):
-    '''input should be a dictionary of control parameters
-    output should be the model space tensors'''
+    """
+    input should be a dictionary of control parameters
+    output should be the model space tensors
+    """
     from gaborizer.src.gabor_feature_dictionaries import gabor_feature_maps
     print(gabor_params)
     n_ori = gabor_params['n_orientations']
-    gfm = gabor_feature_maps(n_ori, \
-                             gabor_params['deg_per_stimulus'], (
-                             gabor_params['lowest_sp_freq'], gabor_params['highest_sp_freq'],
-                             gabor_params['num_sp_freq']), \
+    gfm = gabor_feature_maps(n_ori, gabor_params['deg_per_stimulus'], (
+        gabor_params['lowest_sp_freq'], gabor_params['highest_sp_freq'],
+        gabor_params['num_sp_freq']), \
                              pix_per_cycle=gabor_params['pix_per_cycle'], complex_cell=gabor_params['complex_cell'], \
                              diams_per_filter=gabor_params['diams_per_filter'], \
                              cycles_per_radius=gabor_params['cycles_per_radius'])
@@ -266,7 +268,8 @@ def create_gabor_feature_maps(stim_data, gabor_params, nonlinearity=lambda x: x)
     ori = np.array(gfm.gbr_table['orientation'])[0:fmaps_count:fmaps_res_count]
     freq = np.array(gfm.gbr_table['cycles per deg.'])[:fmaps_res_count]
     env = np.array(gfm.gbr_table['radius of Gauss. envelope (deg)'])[:fmaps_res_count]
-    # preprocess_gabor_feature_maps sorts the frequencies and angle such that all feature with the same freq are contiguous.
+    # preprocess_gabor_feature_maps sorts the frequencies and angle such that all feature with the same freq are
+    # contiguous.
     partitions = [0, ]
     for r in fmaps_sizes:
         partitions += [partitions[-1] + r[1], ]
